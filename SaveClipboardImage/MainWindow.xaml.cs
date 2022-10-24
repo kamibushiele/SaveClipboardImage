@@ -1,22 +1,11 @@
-﻿using System;
+﻿using ClipboardImageViewer;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Drawing;
-using Microsoft.Win32;
 
 namespace SaveClipboardImage
 {
@@ -34,16 +23,16 @@ namespace SaveClipboardImage
             var cli = new Commandline();
             AppMode = cli.Mode;
             img = new ClipboardImage((str) => { Console.WriteLine(str); });
-            switch (AppMode.mode)
+            switch (AppMode.Mode)
             {
-                case StartMode.Mode.NoGUI:
-                    UpdateImage();
-                    img.Save(AppMode.outputFilrPath);
+                case StartMode.ModeEnum.NoGUI:
+                    img.GetImage();
+                    img.Save(AppMode.OutputFilrPath);
                     Close();
                     return;
-                case StartMode.Mode.SetFileGUI:
-                case StartMode.Mode.SetFileAndDirGUI:
-                    AddLog($"Mode:{AppMode.mode}");
+                case StartMode.ModeEnum.SetFileGUI:
+                case StartMode.ModeEnum.SetFileAndDirGUI:
+                    AddLog($"Mode : {AppMode.Mode}");
                     break;
                 default:
                     Console.WriteLine("Error");
@@ -52,7 +41,7 @@ namespace SaveClipboardImage
             }
             img.AddLog = AddLog;
             //ウィンドウタイトルをファイルパスにする
-            var path = new List<string>(AppMode.outputDirPath.Split('\\'));
+            var path = new List<string>(AppMode.OutputDirPath.Split('\\'));
             const int prefix = 2;//c:\xxx
             const int suffix = 3;//\yyy\zzz\
             if (path.Count > prefix+suffix)
@@ -63,7 +52,7 @@ namespace SaveClipboardImage
             }
             else
             {
-                Title = AppMode.outputDirPath;
+                Title = AppMode.OutputDirPath;
             }
         }
         private void AddLog(string message)
@@ -76,36 +65,33 @@ namespace SaveClipboardImage
         {
             Log.Text = "";
         }
-        private void ImageUpdated(object sender, EventArgs e)
+        private void UpdateImage()
         {
-            if (img.ImageExist && img.Image != null)
+            var result = img.GetImage();
+            if(result == true)
             {
-                Preview.Source = img.Image;
-                string size;
-                if (img.Image is BitmapSource)
+                if (img.ImageExist && img.Image != null)
                 {
-                    var bmpsrc = (BitmapSource)img.Image;
-                    size = $"{bmpsrc.PixelWidth} x {bmpsrc.PixelHeight}";
+                    Preview.Source = img.Image;
+                    string size;
+                    if (img.Image is BitmapSource)
+                    {
+                        var bmpsrc = (BitmapSource)img.Image;
+                        size = $"{bmpsrc.PixelWidth} x {bmpsrc.PixelHeight}";
+                    }
+                    else
+                    {
+                        size = $"{img.Image.Width} x {img.Image.Height}";
+                    }
+                    imgSizeTextBlock.Text = $"W x H = {size}";
+                    AddLog($"size: {size}");
                 }
                 else
                 {
-                    size = $"{img.Image.Width} x {img.Image.Height}";
+
+                    Preview.Source = null;
+                    imgSizeTextBlock.Text = "";
                 }
-                imgSizeTextBlock.Text = $"W x H = {size}";
-                AddLog($"size: {size}");
-            }
-            else
-            {
-
-                Preview.Source = null;
-                imgSizeTextBlock.Text = "";
-            }
-        }
-        private void UpdateImage()
-        {
-            if(img.GetImage(new EventHandler(ImageUpdated)))
-            {
-
             }
         }
         private void SaveImage()
@@ -115,9 +101,9 @@ namespace SaveClipboardImage
                 AddLog("No Image.");
                 return;
             }
-            if(AppMode.mode == StartMode.Mode.SetFileGUI)
+            if(AppMode.Mode == StartMode.ModeEnum.SetFileGUI)
             {
-                img.Save(System.IO.Path.Combine(AppMode.outputDirPath, FileName.Text));
+                img.Save(System.IO.Path.Combine(AppMode.OutputDirPath, FileName.Text));
                 Close();
                 return;
             }
@@ -149,6 +135,45 @@ namespace SaveClipboardImage
         {
             UpdateImage();
             FileName.Text = DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
+            FileName.Focus();
+            EventManager.RegisterClassHandler(typeof(TextBox), TextBox.KeyDownEvent, new KeyEventHandler(TextBox_KeyDown));
+        }
+        void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter & (sender as TextBox).AcceptsReturn == false) MoveToNextUIElement(e);
+        }
+        void MoveToNextUIElement(KeyEventArgs e)
+        {
+            // Creating a FocusNavigationDirection object and setting it to a
+            // local field that contains the direction selected.
+            FocusNavigationDirection focusDirection = FocusNavigationDirection.Next;
+
+            // MoveFocus takes a TraveralReqest as its argument.
+            TraversalRequest request = new TraversalRequest(focusDirection);
+
+            // Gets the element with keyboard focus.
+            UIElement elementWithFocus = Keyboard.FocusedElement as UIElement;
+
+            // Change keyboard focus.
+            if (elementWithFocus != null)
+            {
+                if (elementWithFocus.MoveFocus(request)) e.Handled = true;
+            }
+        }
+
+        private void FileName_GotFocus(object sender, RoutedEventArgs e)
+        {
+            FileName.SelectAll();
+        }
+
+        private void FileName_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (FileName.IsFocused)
+            {
+                return;
+            }
+            FileName.Focus();
+            e.Handled = true;
         }
     }
 }

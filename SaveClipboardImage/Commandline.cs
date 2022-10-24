@@ -3,18 +3,13 @@ using CommandLine.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaveClipboardImage
 {
     public class CliOptions
     {
-
         [CommandLine.Option('o', "output", Required = false, HelpText = "Output file path or output directory.")]
         public string OutputPath { get; set; }
-
         [Usage]
         public static IEnumerable<Example> Examples
         {
@@ -30,52 +25,54 @@ namespace SaveClipboardImage
     }
     public class StartMode
     {
-        public enum Mode
+        public enum ModeEnum
         {
             SetFileAndDirGUI,//出力場所・ファイル名をGUIで決める
             SetFileGUI,//ファイル名だけGUIで決める
             NoGUI,//GUIを出さない
             Error,
         }
-        public Mode mode { get; private set; }
-        public string outputDirPath { get; private set; }
-        public string outputFilrPath { get; private set; }
-        public StartMode(string outputPath)
+        public ModeEnum Mode { get; private set; }
+        public string OutputDirPath { get; private set; }
+        public string OutputFilrPath { get; private set; }
+        public StartMode(CliOptions option)
         {
+            var outputPath = option.OutputPath;
             try
             {
                 if (outputPath == null || outputPath == "")
                 {
-                    mode = Mode.SetFileAndDirGUI;
-                    outputFilrPath = "";
-                    outputDirPath = Path.GetFullPath("./");
+                    Mode = ModeEnum.SetFileAndDirGUI;
+                    OutputFilrPath = "";
+                    OutputDirPath = Path.GetFullPath("./");
                 }
                 else if (Path.HasExtension(outputPath))
                 {
-                    mode = Mode.NoGUI;
-                    outputFilrPath = Path.GetFullPath(outputPath);
-                    outputDirPath = "";
+                    Mode = ModeEnum.NoGUI;
+                    OutputFilrPath = Path.GetFullPath(outputPath);
+                    OutputDirPath = "";
                 }
                 else
                 {
-                    mode = Mode.SetFileGUI;
-                    outputFilrPath = "";
-                    outputDirPath = Path.GetFullPath(outputPath);
+                    Mode = ModeEnum.SetFileGUI;
+                    OutputFilrPath = "";
+                    OutputDirPath = Path.GetFullPath(outputPath);
                 }
             }
             catch (Exception)
             {
-                mode = Mode.Error;
-                outputFilrPath = "";
-                outputDirPath = "";
+                Mode = ModeEnum.Error;
+                OutputFilrPath = "";
+                OutputDirPath = "";
                 Console.WriteLine("path error. invaild path.");
             }
+            Console.WriteLine($"Mode : {Mode}");
         }
         public StartMode()
         {
-            mode = Mode.Error;
-            outputFilrPath = "";
-            outputDirPath = "";
+            Mode = ModeEnum.Error;
+            OutputFilrPath = "";
+            OutputDirPath = "";
         }
     }
     internal class Commandline
@@ -93,7 +90,7 @@ namespace SaveClipboardImage
             {
                 case ParserResultType.Parsed:
                     var res = parserResult.Value;
-                    Mode = new StartMode(res.OutputPath);
+                    Mode = new StartMode(res);
                     break;
                 default:
                     Mode = new StartMode();
