@@ -11,7 +11,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
         override protected string ClipboardDataString() { return "Bitmap"; }
         //override protected string ClipboardDataString() { return "System.Windows.Media.Imaging.BitmapSource"; }
         //override protected string ClipboardDataString() { return "System.Drawing.Bitmap"; }//not support .Net 6
-        override public ImageSource GetBitmapSourceByDataObject(IDataObject dataObject)
+        override public ImageSourceStruct GetBitmapSourceByDataObject(IDataObject dataObject)
         {
             object data = GetData(dataObject);
             if (data != null)
@@ -19,11 +19,11 @@ namespace SaveClipboardImage.ClipboardImageViewer
                 var bitmap = data as BitmapSource;
                 var fmter = new FormatConvertedBitmap(bitmap,PixelFormats.Bgr32,null,0);//アルファチャネルがあるとなせか表示やpng保存がおかしくなる
                 fmter.Freeze();
-                return fmter;
+                return new ImageSourceStruct {Source = fmter, SourcePath=""};
             }
             else
             {
-                return null;
+                return new ImageSourceStruct { };
             }
         }
     }

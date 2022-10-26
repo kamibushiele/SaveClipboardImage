@@ -84,6 +84,14 @@ namespace SaveClipboardImage
                         size = $"{img.Image.Width} x {img.Image.Height}";
                     }
                     imgSizeTextBlock.Text = $"W x H = {size}";
+                    if(img.ImageSourcePath != null)
+                    {
+                        ImageSourcePath.Text = img.ImageSourcePath;
+                    }
+                    else
+                    {
+                        ImageSourcePath.Text = "";
+                    }
                     AddLog($"size: {size}");
                 }
                 else

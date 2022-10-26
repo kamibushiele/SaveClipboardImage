@@ -6,6 +6,11 @@ using System.Windows.Media.Imaging;
 
 namespace SaveClipboardImage.ClipboardImageViewer
 {
+    public struct ImageSourceStruct
+    {
+        public ImageSource Source { get; set; }
+        public string? SourcePath { get; set; }
+    }
     internal abstract class ClipBoardGetterImageAbs
     {
         abstract protected string ClipboardDataString();
@@ -14,7 +19,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
         {
             AddLog = addLog;
         }
-        abstract public ImageSource GetBitmapSourceByDataObject(IDataObject dataObject);
+        abstract public ImageSourceStruct GetBitmapSourceByDataObject(IDataObject dataObject);
         protected object GetData(IDataObject dataObject)
         {
             var data = dataObject.GetData(ClipboardDataString());

@@ -12,4 +12,8 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="@REM &#xD;&#xA;@REM call $(ProjectDir)\build_after.bat&#xD;&#xA;&#xD;&#xA;@REM readme, license等コピー&#xD;&#xA;md $(TargetDir)Licenses&#xD;&#xA;@REM xcopy /e /y $(ProjectDir)..\Licenses $(TargetDir)Licenses&#xD;&#xA;xcopy /y $(SolutionDir)\License.txt $(TargetDir)&#xD;&#xA;xcopy /y $(SolutionDir)\Readme.md $(TargetDir)&#xD;&#xA;@REM 不要ファイル削除&#xD;&#xA;@REM del $(TargetDir)*.xml&#xD;&#xA;del $(TargetDir)*.pdb&#xD;&#xA;&#xD;&#xA;@REM 実行ファイル配布用zip化。&#xD;&#xA;@REM zipコマンドが使える場合は 以下gotoをコメントアウト&#xD;&#xA;@REM goto END&#xD;&#xA;cd $(TargetDir)\..\&#xD;&#xA;md $(ProjectName)&#xD;&#xA;echo aaa $(targetDir)&#xD;&#xA;xcopy $(targetDir) /e /y $(ProjectName)\&#xD;&#xA;zip -r $(ProjectName).zip $(ProjectName)\&#xD;&#xA;rd /s /q $(ProjectName)\&#xD;&#xA;:END" />
+  </Target>
+
 </Project>

@@ -76,6 +76,7 @@ namespace ClipboardImageViewer
         public bool ImageExist {get{return (nowImageType != ImageState.None);} }
         private Uri imageUri;
         private BitmapSource imageBmpSource;
+        public string ImageSourcePath { get; private set; }//URLやファイルパス
         public ImageSource Image { get; private set; }//ImageSource.Sourceに代入する値
         public Action<string> AddLog { get; set; }
         public ClipboardImage(Action<string> addlog)
@@ -87,12 +88,14 @@ namespace ClipboardImageViewer
             this.imageUri = imageUri;
             nowImageType = ImageState.URL;
             Image = source;
+            ImageSourcePath = imageUri.ToString();
         }
-        private void ImageApply(BitmapSource imageBmpSource, ImageSource source)
+        private void ImageApply(BitmapSource imageBmpSource, ImageSource source, string sourcePath= "")
         {
             this.imageBmpSource = imageBmpSource;
             nowImageType = ImageState.BitmapSource;
             Image = source;
+            ImageSourcePath = sourcePath;
         }
         public bool GetImage()
         {
@@ -108,9 +111,10 @@ namespace ClipboardImageViewer
             foreach (var getter in getterList)
             {
                 var bitmap = getter.GetBitmapSourceByDataObject(clipboard);
-                if(bitmap != null)
+                if(bitmap.Source != null)
                 {
-                    ImageApply(bitmap as BitmapSource, bitmap);
+                    var path = (bitmap.SourcePath!=null) ? bitmap.SourcePath : "";
+                    ImageApply(bitmap.Source as BitmapSource, bitmap.Source, path);
                     return true;
                 }
             }

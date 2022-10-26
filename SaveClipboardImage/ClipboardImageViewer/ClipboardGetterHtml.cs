@@ -16,7 +16,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
             web = new HttpClient();
         }
         override protected string ClipboardDataString() { return "HTML Format"; }
-        override public ImageSource GetBitmapSourceByDataObject(IDataObject dataObject)
+        override public ImageSourceStruct GetBitmapSourceByDataObject(IDataObject dataObject)
         {
             object data = GetData(dataObject);
             if (data != null)
@@ -27,7 +27,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
                 if (!match.Success && match.Groups.Count != 2)
                 {
                     AddLog("Not found <img> tag in clipboard");//HTMLにimgタグなし
-                    return null;
+                    return new ImageSourceStruct {};
                 }
                 string url = match.Groups[1].Value;
                 string decodedUrl = System.Web.HttpUtility.HtmlDecode(url);//&;amp等を&等に直す
@@ -46,7 +46,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
                         bitmap.EndInit();
                         bitmap.Freeze();
                     }
-                    return bitmap;
+                    return new ImageSourceStruct { Source=bitmap, SourcePath = decodedUrl };
                 }
                 else if(scheme == "file")//ローカルの画像
                 {
@@ -57,7 +57,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
                     bitmap.CacheOption = BitmapCacheOption.OnLoad;//これをしないとファイルを開放しない
                     bitmap.EndInit();
                     bitmap.Freeze();
-                    return bitmap;
+                    return new ImageSourceStruct { Source = bitmap, SourcePath = uri.LocalPath + Uri.UnescapeDataString(uri.Fragment)};
                 }
                 else if(scheme == "data")//Data URL
                 {
@@ -67,7 +67,7 @@ namespace SaveClipboardImage.ClipboardImageViewer
                     var b64match = regb64.Match(decodedUrl);
                     if(!b64match.Success && match.Groups.Count != 1)
                     {
-                        return null;
+                        return new ImageSourceStruct { };
                     }
                     var imgbin = System.Convert.FromBase64String(b64match.Groups[1].Value);
                     var bitmap = new BitmapImage();
@@ -80,17 +80,17 @@ namespace SaveClipboardImage.ClipboardImageViewer
                         bitmap.EndInit();
                         bitmap.Freeze();
                     }
-                    return bitmap;
+                    return new ImageSourceStruct { Source = bitmap, SourcePath = decodedUrl };
                 }
                 else//不明
                 {
                     AddLog($"Unsupptorted URI scheme:{scheme}");
-                    return null;
+                    return new ImageSourceStruct { };
                 }
             }
             else
             {
-                return null;
+                return new ImageSourceStruct { };
             }
         }
     }

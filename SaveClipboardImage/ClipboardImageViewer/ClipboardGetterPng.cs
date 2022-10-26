@@ -9,17 +9,17 @@ namespace SaveClipboardImage.ClipboardImageViewer
     {
         public ClipboardGetterPng(Action<string> addLog) : base(addLog) { }
         override protected string ClipboardDataString() { return "PNG"; }
-        override public ImageSource GetBitmapSourceByDataObject(IDataObject dataObject)
+        override public ImageSourceStruct GetBitmapSourceByDataObject(IDataObject dataObject)
         {
             object data = GetData(dataObject);
             if (data != null)
             {
                 var bitmap = GetBitmapImageByStream(data as MemoryStream);
-                return bitmap;
+                return new ImageSourceStruct { Source = bitmap, SourcePath = ""};
             }
             else
             {
-                return null;
+                return new ImageSourceStruct { };
             }
         }
     }
