@@ -1,8 +1,9 @@
 @REM readme, license等コピー
 md $(TargetDir)Licenses
-@REM xcopy /e /y $(ProjectDir)..\Licenses $(TargetDir)Licenses
+xcopy /y $(SolutionDir)\Licenses\* $(TargetDir)Licenses
 xcopy /y $(SolutionDir)\License.txt $(TargetDir)
 xcopy /y $(SolutionDir)\Readme.md $(TargetDir)
+xcopy /y $(ProjectDir)\bat\* $(TargetDir)
 @REM 不要ファイル削除
 @REM del $(TargetDir)*.xml
 del $(TargetDir)*.pdb
