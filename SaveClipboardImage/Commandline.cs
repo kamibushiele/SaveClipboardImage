@@ -46,17 +46,17 @@ namespace SaveClipboardImage
                     OutputFilrPath = "";
                     OutputDirPath = Path.GetFullPath("./");
                 }
-                else if (Path.HasExtension(outputPath))
-                {
-                    Mode = ModeEnum.NoGUI;
-                    OutputFilrPath = Path.GetFullPath(outputPath);
-                    OutputDirPath = "";
-                }
-                else
+                else if (Directory.Exists(outputPath))
                 {
                     Mode = ModeEnum.SetFileGUI;
                     OutputFilrPath = "";
                     OutputDirPath = Path.GetFullPath(outputPath);
+                }
+                else
+                {
+                    Mode = ModeEnum.NoGUI;
+                    OutputFilrPath = Path.GetFullPath(outputPath);
+                    OutputDirPath = "";
                 }
             }
             catch (Exception)
