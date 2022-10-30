@@ -2,25 +2,69 @@
 
 ## 概要
 
-Windows のクリップボードにある画像を保存する
+Windows のクリップボードにある画像を保存する。
+
+右クリックメニューに登録すればクリップボード画像を特定のフォルダに画像を保存可能
+
+### 対応出力形式
+
+* PNG(デフォルト)
+* JPG
+
+### インストールとアンインストール(右クリックメニュー)
+
+右クリックメニューを使わない場合以下の操作は不要
+
+* インストール : `_install.bat`を **管理者権限で**実行する
+* アンインストール : `_uninstall.bat`を **管理者権限で**実行する
+
+### 対応クリップボード形式
+
+- Bitmap(一般的なクリップボードの画像。透過色は白になる) 
+- PNG(コピー元ソフトが対応している場合。透過が可能)
+- HTML文書(装飾付き文書内に含まれる画像)
+  - ローカル画像ファイル
+  - HTTP画像ファイル
+  - DataURL
+
+### 動作確認ソフト
+
+- Microsoft Word
+  - 文章に含まれた画像→HTML
+  - 図形のみ選択→PNG
+- Microsoft PowerPoint
+  - 図形・テキスト・スライド→PNG
+- Microsoft Excel
+  - 表→Bitmap
+  - 図形・テキスト→PNG
+- ClipStudio
+  - コピー→Bitmap
 
 ## コマンドライン引数
 
-### 任意:`-o <outputDirPath | outputFilePath>`
+使い所
+
+* 単体で使う場合
+* 他の自動化と組み合わせる場合
+
+### 任意:`-o [outputDirPath | outputFilePath]`
 
 出力ファイルまたはディレクトリを指定する。
 
 #### ファイル名を指定した場合
-* `SaveClipboardImage.exe -o ./outputpath.png`
+* `SaveClipboardImage.exe -o ./outputpath.png`→outputpath.pngに画像を保存する
 
 GUIなしで起動し、ファイルを保存し終了する。
+拡張子は省略するとpngになる
 
 #### ディレクトリを指定した場合
-* `SaveClipboardImage.exe -o ./aaa/`
+* `SaveClipboardImage.exe -o ./aaa/`→aaaのフォルダに画像を保存する
   
-GUIで起動し、保存ボタンを押すと終了する。
+GUIで起動し、保存ボタンを押すとダイアログなしで保存して終了する。
 
 #### 引数自体を省略した場合
+
+ダブルクリックで実行した場合と同じ。
 
 GUIで起動し、保存ボタンを押すとダイアログでフォルダとファイル名を決める。
 保存しても終了しない。
