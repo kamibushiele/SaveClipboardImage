@@ -38,6 +38,6 @@
         <TextBox x:Name="FileName" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" Height="26" TabIndex="1" GotFocus="FileName_GotFocus" PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown"/>
         <GridSplitter HorizontalAlignment="Left" Grid.Column="1" Width="5" IsTabStop="False"/>
         <TextBlock x:Name="imgSizeTextBlock" HorizontalAlignment="Left" Margin="10,41,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="16" Width="118"/>
-        <TextBox x:Name="ImageSourcePath" Margin="10,0,10,10" TextWrapping="WrapWithOverflow" VerticalAlignment="Bottom" FontSize="16" Height="26" TabIndex="1" GotFocus="FileName_GotFocus" PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown"/>
+        <TextBox x:Name="ImageSourcePath" Margin="10,0,10,10" TextWrapping="WrapWithOverflow" VerticalAlignment="Bottom" FontSize="16" Height="26" GotFocus="FileName_GotFocus" PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown" IsTabStop="False"/>
     </Grid>
 </Window>
