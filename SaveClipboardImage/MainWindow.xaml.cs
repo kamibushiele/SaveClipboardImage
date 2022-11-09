@@ -183,5 +183,27 @@ namespace SaveClipboardImage
             FileName.Focus();
             e.Handled = true;
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.F5)
+            {
+                UpdateImage();
+                return;
+            }
+            if(e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Key == Key.S)
+                {
+                    SaveImage();
+                    return;
+                }
+                if (e.Key == Key.C)
+                {
+                    return;
+                }
+
+            }
+        }
     }
 }

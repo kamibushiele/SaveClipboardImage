@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SaveClipboardImage"
         mc:Ignorable="d"
         Title="MainWindow" Height="274" Width="472"
-        MinHeight="280" MinWidth="419" Loaded="Window_Loaded">
+        MinHeight="280" MinWidth="419" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="100" Width="233*"/>
